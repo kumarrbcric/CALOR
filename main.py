@@ -2,10 +2,6 @@ import flet as ft
 import requests
 
 def fetch_weather_data(lat=10.7867, lon=79.1378):
-    """
-    Fetches real-time weather & heat metrics from Open-Meteo API.
-    Default coordinates set to Thanjavur / SASTRA campus region.
-    """
     url = (
         f"https://api.open-meteo.com/v1/forecast?"
         f"latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature&timezone=auto"
@@ -31,15 +27,14 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # UI Elements
-    title_text = ft.Text("CalorPulse", size=32, weight=ft.FontWeight.BOLD, color=ft.colors.ORANGE_400)
-    subtitle_text = ft.Text("Real-Time Heat Risk & Weather Alert", size=14, color=ft.colors.GREY_400)
+    title_text = ft.Text("CalorPulse", size=32, weight=ft.FontWeight.BOLD, color=ft.Colors.ORANGE_400)
+    subtitle_text = ft.Text("Real-Time Heat Risk & Weather Alert", size=14, color=ft.Colors.GREY_400)
     
     temp_card = ft.Text("Temperature: -- °C", size=20, weight=ft.FontWeight.W_500)
-    apparent_temp_card = ft.Text("Feels Like: -- °C", size=20, weight=ft.FontWeight.W_500, color=ft.colors.RED_300)
-    humidity_card = ft.Text("Humidity: -- %", size=18, color=ft.colors.BLUE_200)
+    apparent_temp_card = ft.Text("Feels Like: -- °C", size=20, weight=ft.FontWeight.W_500, color=ft.Colors.RED_300)
+    humidity_card = ft.Text("Humidity: -- %", size=18, color=ft.Colors.BLUE_200)
 
-    status_indicator = ft.Text("Status: Initializing...", size=16, color=ft.colors.AMBER_300)
+    status_indicator = ft.Text("Status: Initializing...", size=16, color=ft.Colors.AMBER_300)
 
     def refresh_weather(e=None):
         status_indicator.value = "Status: Fetching live weather data..."
@@ -54,24 +49,24 @@ def main(page: ft.Page):
         if isinstance(weather['apparent_temp'], (int, float)):
             if weather['apparent_temp'] > 40:
                 status_indicator.value = "Alert: Extreme Heat Risk!"
-                status_indicator.color = ft.colors.RED_500
+                status_indicator.color = ft.Colors.RED_500
             elif weather['apparent_temp'] > 35:
                 status_indicator.value = "Warning: High Heat Risk"
-                status_indicator.color = ft.colors.ORANGE_400
+                status_indicator.color = ft.Colors.ORANGE_400
             else:
                 status_indicator.value = "Status: Normal Conditions"
-                status_indicator.color = ft.colors.GREEN_400
+                status_indicator.color = ft.Colors.GREEN_400
         else:
             status_indicator.value = "Status: Data Updated"
-            status_indicator.color = ft.colors.BLUE_300
+            status_indicator.color = ft.Colors.BLUE_300
             
         page.update()
 
     refresh_button = ft.ElevatedButton(
         text="Refresh Weather",
-        icon=ft.icons.REFRESH,
+        icon=ft.Icons.REFRESH,
         on_click=refresh_weather,
-        style=ft.ButtonStyle(color=ft.colors.WHITE, bgcolor=ft.colors.ORANGE_800)
+        style=ft.ButtonStyle(color=ft.Colors.WHITE, bgcolor=ft.Colors.ORANGE_800)
     )
 
     page.add(
@@ -79,14 +74,14 @@ def main(page: ft.Page):
             controls=[
                 title_text,
                 subtitle_text,
-                ft.Divider(height=20, color=ft.colors.TRANSPARENT),
+                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                 ft.Container(
                     content=ft.Column(
                         controls=[
                             temp_card,
                             apparent_temp_card,
                             humidity_card,
-                            ft.Divider(height=10, color=ft.colors.GREY_700),
+                            ft.Divider(height=10, color=ft.Colors.GREY_700),
                             status_indicator,
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
@@ -95,10 +90,10 @@ def main(page: ft.Page):
                     ),
                     padding=20,
                     border_radius=12,
-                    bgcolor=ft.colors.SURFACE_VARIANT,
+                    bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST,
                     alignment=ft.alignment.center,
                 ),
-                ft.Divider(height=20, color=ft.colors.TRANSPARENT),
+                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                 refresh_button,
             ],
             alignment=ft.MainAxisAlignment.CENTER,
@@ -110,13 +105,5 @@ def main(page: ft.Page):
     refresh_weather()
 
 if __name__ == "__main__":
-    # Safe multi-environment launcher fix for Android APK builds
-    try:
-        ft.app(target=main)
-    except AttributeError:
-        try:
-            from flet import flet
-            flet.app(target=main)
-        except Exception:
-            import flet_core
-            flet_core.app(target=main)
+    from flet.app import app
+    app(target=main)
