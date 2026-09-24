@@ -51,7 +51,6 @@ def main(page: ft.Page):
         apparent_temp_card.value = f"Feels Like: {weather['apparent_temp']} °C"
         humidity_card.value = f"Humidity: {weather['humidity']} %"
         
-        # Simple heat risk assessment based on apparent temperature
         if isinstance(weather['apparent_temp'], (int, float)):
             if weather['apparent_temp'] > 40:
                 status_indicator.value = "Alert: Extreme Heat Risk!"
@@ -75,7 +74,6 @@ def main(page: ft.Page):
         style=ft.ButtonStyle(color=ft.colors.WHITE, bgcolor=ft.colors.ORANGE_800)
     )
 
-    # Layout Container
     page.add(
         ft.Column(
             controls=[
@@ -109,9 +107,16 @@ def main(page: ft.Page):
         )
     )
 
-    # Fetch initial weather data on load
     refresh_weather()
 
 if __name__ == "__main__":
-    # Calling flet.app directly avoids the 'module flet has no attribute app' issue on mobile
-    ft.app(target=main)
+    # Safe multi-environment launcher fix for Android APK builds
+    try:
+        ft.app(target=main)
+    except AttributeError:
+        try:
+            from flet import flet
+            flet.app(target=main)
+        except Exception:
+            import flet_core
+            flet_core.app(target=main)
