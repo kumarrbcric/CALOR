@@ -39,24 +39,13 @@ jobs:
         run: |
           yes | flutter doctor --android-licenses > /dev/null 2>&1 || true
 
-      - name: Generate Flutter App Directory
+      - name: Build Android APK
         run: |
-          flet build apk --no-web-renderer || true
+          flet build apk
 
-      - name: Build Final Release APK
-        run: |
-          if [ -d "build/flutter" ]; then
-            cd build/flutter
-            flutter build apk --release
-          elif [ -d "build/apk" ]; then
-            echo "APK already generated in build/apk"
-          fi
-
-      - name: Upload APK File
+      - name: Locate and Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: CalorPulse-APK
-          path: |
-            build/apk/*.apk
-            build/flutter/build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: warn
+          path: "**/*.apk"
+          if-no-files-found: error
