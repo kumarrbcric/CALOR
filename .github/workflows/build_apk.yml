@@ -40,15 +40,13 @@ jobs:
           flutter-version: '3.22.x'
           channel: 'stable'
 
-      - name: Accept Android Licenses
+      - name: Auto Accept Licenses
         run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          printf "y\ny\ny\ny\ny\ny\n" | flutter doctor --android-licenses || true
+          yes | flutter doctor --android-licenses > /dev/null 2>&1 || true
 
       - name: Build Android APK
         env:
-          CI: true
+          CI: "true"
         run: |
           flet build apk
 
